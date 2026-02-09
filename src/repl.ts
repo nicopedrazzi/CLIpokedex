@@ -3,7 +3,7 @@ import { initState, type State, type CLICommand } from "./state.js";
 
 export function startREPL() {
   const appState: State = initState();
-
+  console.log("Welcome to the Pokedex!");
   appState.readline.prompt();
 
   appState.readline.on("line", async (input) => {
