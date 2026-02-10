@@ -1,7 +1,7 @@
 import { createInterface, type Interface } from "readline";
 import { commandExit } from "./command_exit.js";
 import { commandHelp } from "./command_help.js";
-import { map, mapb, commandExplore, commandCatch } from "./command_map.js";
+import { map, mapb, commandExplore, commandCatch, commandInspect, commandPokedex } from "./command_map.js";
 import { PokeAPI, Pokemon } from "./pokeapi.js";
 
 
@@ -61,6 +61,16 @@ export function initState(): State {
       description: "Catch a Pokemon and add it to your Pokedex",
       callback: commandCatch,
     },
+    inspect: {
+      name: "inspect",
+      description: "Describe the selected pokemon",
+      callback: commandInspect,
+    },
+    pokedex: {
+      name: "pokedex",
+      description: "List your pokedex",
+      callback: commandPokedex,
+    }
   };
 
   return {

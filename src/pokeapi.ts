@@ -7,42 +7,44 @@ export class PokeAPI {
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
     const url = pageURL ?? `${PokeAPI.baseURL}/location-area`;
 
-    if (this.cache.get(url)){
-      return this.cache.get(url) as ShallowLocations;
+    const cached = this.cache.get<ShallowLocations>(url);
+    if (cached) {
+      return cached;
     }
     const res = await fetch(url, { method: "GET" });
     if (!res.ok) {
       throw new Error(`PokeAPI error: ${res.status} ${res.statusText}`);
     }
-    let response = await res.json()
-    this.cache.add(url,response);
-    return (await response) as ShallowLocations;
+    const response = (await res.json()) as ShallowLocations;
+    this.cache.add(url, response);
+    return response;
   }
 
   async fetchLocation(locationName: string): Promise<Location> {
     const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
 
-    if (this.cache.get(url)){
-      return this.cache.get(url) as Location;
+    const cached = this.cache.get<Location>(url);
+    if (cached) {
+      return cached;
     }
     const res = await fetch(url, { method: "GET" });
     if (!res.ok) {
       throw new Error(`PokeAPI error: ${res.status} ${res.statusText}`);
     }
-    let response = await res.json()
-    this.cache.add(url,response)
-    return (response) as Location;
+    const response = (await res.json()) as Location;
+    this.cache.add(url, response);
+    return response;
   };
 
-    async fetchLocationArea(areaName: string) {
+  async fetchLocationArea(areaName: string): Promise<LocationArea> {
     const url = `https://pokeapi.co/api/v2/location-area/${areaName}`;
 
-    const cached = this.cache.get(url);
-    if (cached) return cached.val;
+    const cached = this.cache.get<LocationArea>(url);
+    if (cached) return cached;
 
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const data = (await res.json()) as LocationArea;
 
     this.cache.add(url, data);
     return data;
@@ -51,12 +53,12 @@ export class PokeAPI {
   async catchPokemon(pokemonName: string): Promise<Pokemon> {
     const url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}/`;
 
-    const cached = this.cache.get(url);
-    if (cached) return cached.val;
+    const cached = this.cache.get<Pokemon>(url);
+    if (cached) return cached;
 
     const res = await fetch(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
+    const data = (await res.json()) as Pokemon;
 
     this.cache.add(url, data);
     return data;
@@ -80,7 +82,28 @@ export type Location = {
   name: string;
 };
 
+export type LocationArea = {
+  pokemon_encounters: Array<{
+    pokemon: {
+      name: string;
+    };
+  }>;
+};
+
 export type Pokemon = {
   name: string;
   base_experience: number;
+  height: number;
+  weight: number;
+  stats: Array<{
+    base_stat: number;
+    stat: {
+      name: string;
+    };
+  }>;
+  types: Array<{
+    type: {
+      name: string;
+    };
+  }>;
 };
