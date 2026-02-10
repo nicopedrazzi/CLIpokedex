@@ -1,7 +1,8 @@
 
 import { initState, type State, type CLICommand } from "./state.js";
 
-export function startREPL() {
+
+export async function startREPL() {
   const appState: State = initState();
   console.log("Welcome to the Pokedex!");
   appState.readline.prompt();
@@ -26,7 +27,7 @@ export function startREPL() {
     }
 
     try {
-      cmd.callback(appState);
+      await cmd.callback(appState);
     } catch (e) {
       console.log(e);
     }
