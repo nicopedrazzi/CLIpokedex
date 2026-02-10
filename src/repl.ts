@@ -9,12 +9,14 @@ export async function startREPL() {
 
   appState.readline.on("line", async (input) => {
     const words = cleanInput(input);
+    
     if (words.length === 0) {
       appState.readline.prompt();
       return;
     }
 
     const commandName = words[0] as string;
+    const args = words.slice(1)
     const commands: Record<string, CLICommand> = appState.commands;
     const cmd = commands[commandName];
 
@@ -27,7 +29,7 @@ export async function startREPL() {
     }
 
     try {
-      await cmd.callback(appState);
+      await cmd.callback(appState,...args);
     } catch (e) {
       console.log(e);
     }
